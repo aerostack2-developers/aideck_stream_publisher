@@ -197,6 +197,10 @@ class aideckPublisher(Node):
         The class works with a timer. This is the main action in each loop.
         '''
         msg = Image()
+        msg.header.frame_id = "aideck"
+        stamp = self.get_clock().now().seconds_nanoseconds()
+        msg.header.stamp.sec = stamp[0]
+        msg.header.stamp.nanosec = stamp[1]
         format, imgs = self.getImage(self.client_socket)
 
         if imgs is not None and format == 0:
