@@ -36,9 +36,8 @@
 ###================================
 
 
-import argparse
 import time
-import socket,os,struct, time
+import socket, struct, time
 import numpy as np
 import cv2
 
@@ -198,16 +197,13 @@ class aideckPublisher(Node):
         '''
         msg = Image()
         msg.header.frame_id = "aideck"
-        stamp = self.get_clock().now().seconds_nanoseconds()
-        msg.header.stamp.sec = stamp[0]
-        msg.header.stamp.nanosec = stamp[1]
+        msg.header.stamp = self.get_clock().now().to_msg()
         format, imgs = self.getImage(self.client_socket)
 
         if imgs is not None and format == 0:
             #self.get_logger().info('Publishing: "%s"' % self.i)
             img = imgs[-1]
-            msg = self.br.cv2_to_imgmsg(self.colorCorrectBayer(img,self.factors))
-            msg.header.stamp = self.get_clock().now().to_msg()
+            msg = self.br.cv2_to_imgmsg(self.colorCorrectBayer(img,self.factors), encoding='bgr8')
             self.publisher_.publish(msg)
             self.i += 1
 
