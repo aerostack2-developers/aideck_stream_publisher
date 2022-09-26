@@ -94,6 +94,13 @@ class aideckPublisher(Node):
         self.start = time.time()
         self.count = 0
 
+    def __del___(self):
+        self.close()
+    
+    def close(self):
+        print("Closing socket")
+        self.client_socket.close()
+
     def colorCorrectBayer(self,img_, factors=[1,1,1]):
         '''
         Color correction for the RGB Camera. It has a sensor with a Bayer pattern, which has
@@ -214,7 +221,7 @@ def main(args=None):
     rclpy.init(args=args)
     stream_pub = aideckPublisher()
     rclpy.spin(stream_pub)
-
+    stream_pub.close()
     stream_pub.destroy_node()
 
     rclpy.shutdown()
